@@ -5,6 +5,7 @@ create a summary and save it as a .txt file.
 """
 import logging
 import os
+import sys
 from pathlib import Path
 
 from langchain.chains import LLMChain
@@ -14,6 +15,13 @@ from langchain.chains.summarize import load_summarize_chain
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import PyPDFLoader
 from langchain.schema import Document
+
+
+
+
+# Add the root folder to sys.path
+root_path = Path(__file__).resolve().parents[1]  # Adjust the number of parents based on your structure
+sys.path.append(str(root_path))
 
 from config import set_environment
 from summarize import prompts
@@ -119,5 +127,6 @@ def create_pdf_summaries(directory: str):
 
 if __name__ == "__main__":
     directory = "/Users/ben/Downloads/"
+    directory = "/home/mario/Downloads/Modul B/Modul B Tag 1-20200326/"
     create_pdf_summaries(directory=directory)
 
