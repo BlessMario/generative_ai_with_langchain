@@ -2,19 +2,27 @@
 
 The example CV is from https://github.com/xitanggg/open-resume.
 """
+import sys
+from pathlib import Path
 from typing import Optional
 
 from langchain.chains import create_extraction_chain_pydantic
-from langchain.chat_models import ChatOpenAI
-from langchain.document_loaders import PyPDFLoader
-from pydantic import BaseModel, Field
+#from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
+#from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader
+from pydantic import BaseModel, Field, ConfigDict
 
+# Add the root folder to sys.path
+root_path = Path(__file__).resolve().parents[1]  # Adjust the number of parents based on your structure
+sys.path.append(str(root_path))
 from config import set_environment
 
 set_environment()
 
 
 class Experience(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     # the title doesn't seem to help at all.
     start_date: Optional[str] = Field(description="When the job or study started.")
     end_date: Optional[str] = Field(description="When the job or study ended.")
@@ -23,6 +31,7 @@ class Experience(BaseModel):
 
 
 class Study(Experience):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     degree: Optional[str] = Field(description="The degree obtained or expected.")
     institution: Optional[str] = Field(
         description="The university, college, or educational institution visited."
@@ -32,11 +41,13 @@ class Study(Experience):
 
 
 class WorkExperience(Experience):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
     company: str = Field(description="The company name of the work experience.")
     job_title: Optional[str] = Field(description="The job title.")
 
 
 class Resume(BaseModel):
+    #model_config = ConfigDict(arbitrary_types_allowed=True)
     first_name: Optional[str] = Field(description="The first name of the person.")
     last_name: Optional[str] = Field(description="The last name of the person.")
     linkedin_url: Optional[str] = Field(
@@ -52,6 +63,9 @@ class Resume(BaseModel):
         description="A work experience of the person."
     )
     hobby: Optional[str] = Field(description="A hobby or recreational activity of the person.")
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 
 def parse_cv(pdf_file_path: str) -> str:
@@ -68,5 +82,6 @@ def parse_cv(pdf_file_path: str) -> str:
 
 if __name__ == "__main__":
     print(parse_cv(
-        pdf_file_path="openresume-resume.pdf"
+        pdf_file_path="/home/mario/github/open-resume/public/resume-example/openresume-resume.pdf"
+        #pdf_file_path="openresume-resume.pdf"
     ))
