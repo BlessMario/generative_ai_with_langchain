@@ -1,6 +1,9 @@
 # Using a miniconda base image:
 FROM continuumio/miniconda3:latest
 
+# Fix the Python version to 3.9
+RUN conda install python=3.9
+
 ENV PIP_DEFAULT_TIMEOUT=1000
 
 RUN apt-get update && apt-get install -y pandoc wget build-essential && rm -rf /var/lib/apt/lists/*
@@ -21,4 +24,5 @@ RUN pip install --prefer-binary --no-cache-dir -r requirements.txt
 WORKDIR /home
 
 EXPOSE 8888
-ENTRYPOINT ["jupyter", "notebook", "--notebook-dir=/notebooks", "--ip=0.0.0.0", "--allow-root", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+ENTRYPOINT ["jupyter", "notebook", "--notebook-dir=/notebooks", "--ip=0.0.0.0", "--allow-root", "--ServerApp.token=''", "--ServerApp.password=''"] 
+#"--NotebookApp.token=''",
